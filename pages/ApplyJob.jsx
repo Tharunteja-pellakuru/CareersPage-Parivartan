@@ -194,17 +194,43 @@ const ApplyJob = () => {
     setIsSubmitting(true);
 
     try {
+      console.log("=== FORM SUBMISSION DEBUG ===");
+      console.log("Current formData:", formData);
+      console.log("Schema:", schema);
+      
       const formDataToSend = new FormData();
       formDataToSend.append("job_id", jobId);
       
+      // Get the basic fields from step 1
+      const basicFields = schema.steps[0]?.fields || [];
+      console.log("Basic fields from schema:", basicFields);
+      
+      // Find fields by their properties rather than hardcoded IDs
+      const findFieldValue = (type, label) => {
+        const field = basicFields.find(f => 
+          f.type === type || 
+          f.label?.toLowerCase().includes(label.toLowerCase())
+        );
+        console.log(`Looking for ${type}/${label}, found field:`, field);
+        return field ? formData[field.id] : "";
+      };
+      
       // Map basic fields to backend columns
-      // We assume the IDs are consistent: basic-fullname, basic-email, basic-phone
-      formDataToSend.append("full_name", formData["basic-fullname"] || "");
-      formDataToSend.append("email", formData["basic-email"] || "");
-      formDataToSend.append("phone", formData["basic-phone"] || "");
+      const fullName = findFieldValue("text", "name") || formData["basic-fullname"] || "";
+      const email = findFieldValue("email", "email") || formData["basic-email"] || "";
+      const phone = findFieldValue("tel", "phone") || formData["basic-phone"] || "";
+      
+      console.log("Extracted values:", { fullName, email, phone });
+      
+      formDataToSend.append("full_name", fullName);
+      formDataToSend.append("email", email);
+      formDataToSend.append("phone", phone);
 
-      // Attach Resume
-      const resumeFile = formData["basic-resume"];
+      // Attach Resume - look for file type field
+      const resumeField = basicFields.find(f => f.type === "file");
+      const resumeFile = resumeField ? formData[resumeField.id] : formData["basic-resume"];
+      console.log("Resume file:", resumeFile);
+      
       if (resumeFile instanceof File) {
         formDataToSend.append("resume", resumeFile);
       }
@@ -212,7 +238,12 @@ const ApplyJob = () => {
       // Snapshot of schema and answers
       formDataToSend.append("fields_json", JSON.stringify(formData));
       formDataToSend.append("steps_json", JSON.stringify(schema));
-      console.log(formDataToSend)
+      
+      // Log what we're sending
+      console.log("FormData entries:");
+      for (let [key, value] of formDataToSend.entries()) {
+        console.log(`${key}:`, value instanceof File ? `File: ${value.name}` : value);
+      }
 
       const response = await fetch("https://adminbackend-production-d381.up.railway.app/applicants", {
         method: "POST",
