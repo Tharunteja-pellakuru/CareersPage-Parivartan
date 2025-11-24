@@ -10,7 +10,7 @@ export const JobProvider = ({ children }) => {
 
   const fetchJobs = async () => {
     try {
-      const response = await fetch("yamabiko.proxy.rlwy.net:46484/jobs");
+      const response = await fetch("adminbackend-production-d381.up.railway.app/jobs");
       const data = await response.json();
       console.log(data)
 
