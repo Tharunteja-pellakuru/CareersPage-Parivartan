@@ -214,7 +214,7 @@ const ApplyJob = () => {
       formDataToSend.append("steps_json", JSON.stringify(schema));
       console.log(formDataToSend)
 
-      const response = await fetch("http://localhost:5000/applicants", {
+      const response = await fetch("https://adminbackend-production-d381.up.railway.app/applicants", {
         method: "POST",
         body: formDataToSend,
       });
