@@ -248,7 +248,7 @@ const ApplyJob = () => {
         console.log(`${key}:`, value instanceof File ? `File: ${value.name}` : value);
       }
 
-      const response = await fetch(`${BASE_URL}/applicants `, {
+      const response = await fetch(`${BASE_URL}/applicants`, {
         method: "POST",
         body: formDataToSend,
       });
