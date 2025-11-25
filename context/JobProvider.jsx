@@ -3,7 +3,7 @@ import { jobs as staticJobs } from "../data/jobs"; // Ensure you import your fal
 
 const JobContext = createContext();
 
-const BASE_URL = "https://adminbackend-production-d381.up.railway.app"
+const BASE_URL = "https://adminbackend-production-5195.up.railway.app"
 
 
 export const JobProvider = ({ children }) => {
