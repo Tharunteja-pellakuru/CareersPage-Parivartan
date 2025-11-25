@@ -15,7 +15,9 @@ import {
 import { useJobs } from "../context/JobProvider";
 
 
-const BASE_URL = "https://adminbackend-production-d381.up.railway.app"
+
+
+const BASE_URL = "https://adminbackend-production-5195.up.railway.app"
 
 
 const ApplyJob = () => {
@@ -253,10 +255,25 @@ const ApplyJob = () => {
         body: formDataToSend,
       });
 
-      const data = await response.json();
+      // Try to parse response - could be JSON or HTML (error page)
+      let data;
+      const contentType = response.headers.get("content-type");
+      
+      if (contentType && contentType.includes("application/json")) {
+        data = await response.json();
+      } else {
+        // Backend returned HTML (likely an error page)
+        const htmlText = await response.text();
+        console.error("Backend returned HTML instead of JSON:", htmlText);
+        data = { 
+          message: `Server error (${response.status}). Check console for details.`,
+          htmlError: htmlText.substring(0, 500) // Log first 500 chars
+        };
+      }
 
       if (!response.ok) {
-        throw new Error(data.message || "Submission failed");
+        console.error("Backend Error Response:", data);
+        throw new Error(data.message || `Server error: ${response.status}`);
       }
 
       setIsSubmitting(false);
