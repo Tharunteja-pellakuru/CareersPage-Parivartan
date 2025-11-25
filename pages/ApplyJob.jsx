@@ -15,6 +15,9 @@ import {
 import { useJobs } from "../context/JobProvider";
 
 
+const BASE_URL = "https://adminbackend-production-d381.up.railway.app"
+
+
 const ApplyJob = () => {
   const { jobsList } = useJobs();
   const { jobId } = useParams();
@@ -245,7 +248,7 @@ const ApplyJob = () => {
         console.log(`${key}:`, value instanceof File ? `File: ${value.name}` : value);
       }
 
-      const response = await fetch("https://adminbackend-production-d381.up.railway.app/applicants", {
+      const response = await fetch(`${BASE_URL}/applicants `, {
         method: "POST",
         body: formDataToSend,
       });

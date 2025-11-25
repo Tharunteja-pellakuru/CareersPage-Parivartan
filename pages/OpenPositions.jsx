@@ -18,6 +18,7 @@ import { useJobs } from "../context/JobProvider";
 
 const ITEMS_PER_PAGE = 10;
 
+
 const OpenPositions = () => {
   // Add a safety check for jobsList to prevent crashes if it's null
   const { jobsList, isLoading, error } = useJobs();

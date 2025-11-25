@@ -3,6 +3,9 @@ import { jobs as staticJobs } from "../data/jobs"; // Ensure you import your fal
 
 const JobContext = createContext();
 
+const BASE_URL = "https://adminbackend-production-d381.up.railway.app"
+
+
 export const JobProvider = ({ children }) => {
   const [jobsList, setJobsList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -10,7 +13,7 @@ export const JobProvider = ({ children }) => {
 
   const fetchJobs = async () => {
     try {
-      const response = await fetch("https://adminbackend-production-d381.up.railway.app/jobs");
+      const response = await fetch(`${BASE_URL}/jobs`);
       const data = await response.json();
       console.log(data)
 
